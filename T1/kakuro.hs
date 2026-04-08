@@ -20,3 +20,12 @@ isValueBlock m r c =
     in
         if terceiro == -1 then False else True
     
+inverte :: [t] -> [t]
+
+inverte [] = []
+inverte [t] = [t]
+
+inverte (a:b) = (inverte b)++[a]
+
+main = do
+    print (inverte [1..10])
