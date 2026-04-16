@@ -19,7 +19,8 @@ isValueBlock m r c =
         terceiro = pegaTerceiro bloco -- pegamos o valor que define o tipo do bloco
     in
         if terceiro == -1 then False else True
-    
+
+-- inverte uma lista
 inverte :: [t] -> [t]
 
 inverte [] = []
@@ -27,5 +28,12 @@ inverte [t] = [t]
 
 inverte (a:b) = (inverte b)++[a]
 
+-- retorna quantos valores tem numa lista
+compr :: [t] -> Int
+compr [] = 0
+
+compr (a:b) = 1 + len b
+
 main = do
     print (inverte [1..10])
+    print (len [1..10])
