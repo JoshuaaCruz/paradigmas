@@ -1,15 +1,21 @@
+import Text.Printf (printf)
+
 type Bloco = (Int, Int, Int)
 type Matriz = [[Bloco]]
 
 matriz :: Matriz
-matriz = [
-    [(0, 0, -1), (12, 0, -1), (21, 0, -1), (0, 0, -1), (16, 0, -1), (13, 0, -1)],
-    [(0, 17, -1), (0, 0, 0),   (0, 0, 0),   (22, 11, -1), (0, 0, 0),  (0, 0, 0)],
-    [(0, 15, -1), (0, 0, 0),   (0, 0, 0),   (0, 0, 0),    (0, 0, 0),  (0, 0, 0)],
-    [(0, 0, -1),  (4, 13, -1), (0, 0, 0),   (0, 0, 0),    (0, 0, 0),  (10, 0, -1)],
-    [(0, 18, -1), (0, 0, 0),   (0, 0, 0),   (0, 0, 0),    (0, 0, 0),  (0, 0, 0)],
-    [(0, 10, -1), (0, 0, 0),   (0, 0, 0),   (0, 14, -1),  (0, 0, 0),  (0, 0, 0)]
- ]
+matriz = 
+    [ [(0, 0, -1), (0, 0, -1), (0, 0, -1), (21, 0, -1), (10, 0, -1), (0, 0, -1), (0, 0, -1), (0, 0, -1), (10, 0, -1), (15, 0, -1)]
+    , [(0, 0, -1), (0, 0, -1),(14, 16,-1), (  0, 0, 0), ( 0, 0,  0), (9, 0, -1), (0, 0, -1), (26, 7, -1), ( 0, 0,  0), ( 0, 0,  0)]
+    , [(0, 0, -1), (6,14, -1), (0, 0,  0), (  0, 0, 0), ( 0, 0,  0), (0, 0,  0), (21,19,-1), ( 0, 0,  0), ( 0, 0,  0), ( 0, 0,  0)]
+    , [(0, 7, -1), (0, 0,  0), (0, 0,  0), ( 0, 0,  0), ( 0,29, -1), (0, 0,  0), (0, 0,  0), ( 0, 0,  0), ( 0, 0,  0), ( 0, 0, -1)]
+    , [(0, 7, -1), (0, 0,  0), (0, 0,  0), ( 12, 0,-1), (18,19, -1), (0, 0,  0), (0, 0,  0), ( 0, 0,  0), (15, 0, -1), ( 0, 0, -1)]
+    , [(0, 0, -1), (0,20, -1), (0, 0,  0), ( 0, 0,  0), ( 0, 0,  0), (22, 7,-1), (0, 0,  0), ( 0, 0,  0), ( 0, 0,  0), ( 7, 0, -1)]
+    , [(0, 0, -1), (0, 0, -1), (7, 8, -1), ( 0, 0,  0), ( 0, 0,  0), (0, 0,  0), (0, 0, -1), (20, 4, -1), ( 0, 0,  0), ( 0, 0,  0)]
+    , [(0, 0, -1), (8,27, -1), (0, 0,  0), ( 0, 0,  0), ( 0, 0,  0), (0, 0,  0), ( 8,23,-1), ( 0, 0,  0), ( 0, 0,  0), ( 0, 0,  0)]
+    , [(0, 8, -1), (0, 0,  0), (0, 0,  0), ( 0, 0,  0), ( 0,14, -1), (0, 0,  0), (0, 0,  0), ( 0, 0,  0), ( 0, 0,  0), ( 0, 0, -1)]
+    , [(0, 4, -1), (0, 0,  0), (0, 0,  0), ( 0, 0, -1), ( 0, 0, -1), (0,16, -1), (0, 0,  0), ( 0, 0,  0), ( 0, 0,  -1), ( 0, 0, -1)]
+    ]
 pegaPrimeiro :: Bloco -> Int
 pegaPrimeiro (x, _, _) = x
 
@@ -195,30 +201,35 @@ tentaNumeros mat row col num
                 Nothing -> tentaNumeros mat row col (num + 1) -- deu erro na frente, tenta o proximo num
     | otherwise = tentaNumeros mat row col (num + 1) -- numero atual nao serve, tenta proximo
 
-inverte :: [t] -> [t]
-inverte [] = []
-inverte (a:b) = inverte b ++ [a] -- inverte a lista
-
--- retorna quantos valores tem numa lista
-compr :: [t] -> Int
-compr [] = 0
-compr (_:b) = 1 + compr b 
+-- imprimir linha usando formatacao especial
+imprimeLinha :: [Bloco] -> IO ()
+imprimeLinha [] = putStrLn ""
+imprimeLinha ((dicaCol, dicaLin, val):resto) = do
+    let textoDaCelula = 
+            if val == -1 then
+                if dicaCol == 0 && dicaLin == 0 then
+                    " ### "  -- blocos de dica sem valor sao paredes = ###
+                else
+                    "(" ++ show dicaCol ++ "," ++ show dicaLin ++ ")"
+            else
+                " [" ++ show val ++ "] "
+    
+    -- %-8s forca cada bloco a ocupar 8 espacos
+    printf "%-8s" textoDaCelula
+    imprimeLinha resto
 
 imprimeMatriz :: Matriz -> IO ()
 imprimeMatriz [] = return ()
 imprimeMatriz (linha:linhas) = do
-    print linha 
+    imprimeLinha linha 
     imprimeMatriz linhas 
 
 main :: IO ()
 main = do
-    print (inverte [1..10])
-    print (compr [1..10])
-    
     putStrLn "\nResolvendo o Kakuro...\n"
     
     case solveKakuroRec matriz 0 0 of
         Just solucao -> do
-            putStrLn "Solucao encontrada:"
+            putStrLn "Solucao encontrada:\n"
             imprimeMatriz solucao 
         Nothing -> putStrLn "Nenhuma solucao foi encontrada." 
