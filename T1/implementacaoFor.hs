@@ -9,6 +9,10 @@
 
 for :: Int -> (Int -> t -> Bool) -> (Int -> t -> Int) -> (Int -> t -> t) -> t -> t
 
+-- for None funcCond None funcLoop var = ...
+
+-- for i funcCond None funcLoop var = ...
+
 for i funcCond funcCont funcLoop var =
     if (funcCond i var) == True then
         for (funcCont i var) funcCond funcCont funcLoop (funcLoop i var)
@@ -34,3 +38,4 @@ main = do
     let lista2 = [1..40]
     print(dobrarValor 20 lista2)
     print(for 0 (\x y -> x < (compr y)) (\x y -> x + 1) dobrarValor lista2)
+    print([5,(5-1) .. 0])
