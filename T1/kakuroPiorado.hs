@@ -191,9 +191,10 @@ backtrackingForStep [] mat rowAtual colAtual = [[(-1, -1, -1)]]
 backtrackingForStep (a:b) mat rowAtual colAtual =
     if isSafe mat rowAtual colAtual a then
         let resultado = solveKakuroRec (alterarValor rowAtual colAtual a mat) rowAtual (colAtual + 1)
-                in if resultado /= [[(-1, -1, -1)]]
-                   then resultado
-                   else backtrackingForStep b (alterarValor rowAtual colAtual 0 mat) rowAtual colAtual
+        in if resultado /= [[(-1, -1, -1)]] then
+            resultado
+        else
+            backtrackingForStep b (alterarValor rowAtual colAtual 0 mat) rowAtual colAtual
     else
         backtrackingForStep b mat rowAtual colAtual
 
